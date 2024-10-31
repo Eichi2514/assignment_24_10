@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FAQ</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0e5d8;
+        }
+
+        .center-container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .strText, .answer {
+            margin-top: 15px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="center-container">
+    <div>무엇을 도와드릴까요?</div>
+    <input type="text" id="str" name="str" required>
+    <button onclick="submitQuestion()">질문</button>
+    <div class="strText"></div>
+    <div class="answer"></div>
+</div>
+
+<script>
+    function submitQuestion() {
+        const strInput = document.getElementById("str");
+        const question = strInput.value;
+
+        fetch("/usr/FAQ/questions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({str: question})
+        })
+            .then(response => response.text())
+            .then(answer => {
+                document.querySelector(".answer").innerHTML = "답변 : " + answer;
+                document.querySelector(".strText").innerHTML = "질문 : " + question;
+                strInput.value = '';
+            })
+            .catch(error => console.error("Error:", error));
+    }
+</script>
+</body>
+</html>
